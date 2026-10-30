@@ -17,7 +17,7 @@ static ws2811_t ledstring = {
             .count = ANTALL_PIKSLER,
             .invert = 0,
             .brightness = 60,
-            .strip_type = WS2811_STRIP_RGB,
+            .strip_type = WS2811_STRIP_GRB,
         },
     },
 };
