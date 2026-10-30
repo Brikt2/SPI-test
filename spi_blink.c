@@ -49,6 +49,6 @@ int main(void)
         sleep(1);
     }
 
-    ws2811_fini();
+    ws2811_fini(&ledstring);
     return 0;
 }
