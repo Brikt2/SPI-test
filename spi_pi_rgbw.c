@@ -137,8 +137,6 @@ static void oppdater_led(const uint8_t dmx[]) //Funksjonen tar et array av 8-bit
 
 int main(void) //Selve programmet som kjøres
 {
-	static int debug_count = 0;
-static int debug_count2 = 0;
     signal(SIGINT, avbryt); //Hvis man trykker ctrl+c, kjør avbryt()
     signal(SIGTERM, avbryt); //Hvis man avbryter programmet, f.eks ved å trykke på det krysset i hjørnet, kjør avbryt()
 
@@ -238,10 +236,8 @@ static int debug_count2 = 0;
                     } else { 
                         marker_state = MARK_NORMAL; //gå tilbake til normal-staten
                         event = 3; //Lagre at det var en feil av noe slag
-			if (debug_count2 < 20) {
-        printf("MARKER ERROR: FF %02X\n", byte);
-        debug_count2++;
-    }
+
+                    
                     }
                     break;
 
@@ -252,12 +248,6 @@ static int debug_count2 = 0;
                         event = 2; // BREAK registrert
                     } else {
                         event = 3; // feil
-			static int debug_count = 0;
-
-        if (debug_count < 20) {
-            printf("MARKER ERROR: FF 00 %02X\n", byte);
-            debug_count++;
-        }	
                     }
                     break;
             }
@@ -268,6 +258,11 @@ static int debug_count2 = 0;
 
                 if (dmx_state == READ_CHANNELS && 
                     kanaler >= ANTALL_PIKSLER * ANTALL_CHANNELS) { //hvis vi er ferdig å gjøre klart det vi skal sende på dmx, push signalet
+                    
+                    printf("DMX: CH1=%u CH2=%u CH3=%u CH4=%u CH5=%u CH6=%u CH7=%u CH8=%u\n",
+                    dmx[0], dmx[1], dmx[2], dmx[3],
+                    dmx[4], dmx[5], dmx[6], dmx[7]);
+                    
                     oppdater_led(dmx);
                     antall_frames++;
                 }
