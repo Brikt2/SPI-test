@@ -14,7 +14,7 @@
 #define ANTALL_PIKSLER 60
 #define ANTALL_CHANNELS 4 //per piksel
 #define FREKVENS 800000
-#define STYRKE 60
+#define STYRKE 100
 #define TYPE SK6812_STRIP_RGBW
 #define DMX_CHANNELS 512
 #define UART_ENHET "/dev/serial0" //velger mellom standard mini-UART og den bra uarten jeg fikk ved å skru av bluetooth.
@@ -148,26 +148,28 @@ int main(void) //Selve programmet som kjøres
                 ws2811_get_return_t_str(ret));
         return 1;
     }
-    // Test rødt lys
-for (int i = 0; i < ANTALL_PIKSLER; i++) {
-    ledstring.channel[0].leds[i] = 0xFF000000;
-}
 
-ret = ws2811_render(&ledstring);
 
-if (ret != WS2811_SUCCESS) {
-    fprintf(stderr, "Render feilet: %s\n",
-            ws2811_get_return_t_str(ret));
-}
+        // Test rødt lys
+    for (int i = 0; i < ANTALL_PIKSLER; i++) {
+        ledstring.channel[0].leds[i] = 0x00FF0000;
+    }
 
-sleep(3);
+    ret = ws2811_render(&ledstring);
 
-// Skru av alle LED
-for (int i = 0; i < ANTALL_PIKSLER; i++) {
-    ledstring.channel[0].leds[i] = 0;
-}
+    if (ret != WS2811_SUCCESS) {
+        fprintf(stderr, "Render feilet: %s\n",
+                ws2811_get_return_t_str(ret));
+    }
 
-ws2811_render(&ledstring);
+    sleep(3);
+
+    // Skru av alle LED
+    for (int i = 0; i < ANTALL_PIKSLER; i++) {
+        ledstring.channel[0].leds[i] = 0;
+    }
+
+    ws2811_render(&ledstring);
 
     //for (int i = 0; i < ANTALL_PIKSLER; i++) { //Skru av alle piksler i utgangspunktet
     //    ledstring.channel[0].leds[i] = 0;
