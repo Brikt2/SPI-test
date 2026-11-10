@@ -18,6 +18,7 @@
 #define TYPE SK6812_STRIP_RGBW
 #define DMX_CHANNELS 512
 #define UART_ENHET "/dev/serial0" //velger mellom standard mini-UART og den bra uarten jeg fikk ved å skru av bluetooth.
+#define PAUSETID 100
 
 
 static volatile sig_atomic_t running = 1; //definere en varianbel for å bestemme om programme skal fortsette å kjøre, sånn at vi kan lytte etter ctrl+c senere i programmet.
@@ -32,6 +33,7 @@ static ws2811_t ledstring = { //ws2811_t er en struktert struct som er lagd for 
             .invert = 0, //Vi trenger ikke invertere
             .brightness = STYRKE, //1-100 hvor mye lys skal den gi på maks, legges som et ekstra regnelag etter at den opprinnelige dmx-verdien er hentet.
             .strip_type = TYPE, //fargerekkefølge
+            .reset_us = PAUSETID,
         },
     },
 };
