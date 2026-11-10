@@ -26,6 +26,7 @@ static volatile sig_atomic_t running = 1; //definere en varianbel for å bestemm
 static ws2811_t ledstring = { //ws2811_t er en struktert struct som er lagd for å kunne lagre all infoen proggrammet trenger om ledstripa på et sted.
     .freq = FREKVENS, //signalfrekvensen skal være på 800.000 (det sto i dokmentasjonen)
     .dmanum = 10, //sier at den skal bruke DMA-channel 10 når den skriver direkte til RAM for å spare på cpu-en
+    .reset_us = PAUSETID,
     .channel = {
         [0] = { //channel 1 av 2, vi kan bruke to separate channels til å styre to striper med ulike innstillinger, så lenge bitraten er lik.
             .gpionum = LED_PIN, // henter konstanten på hvilken gpiopin teipen er tilkoblet.
@@ -33,7 +34,7 @@ static ws2811_t ledstring = { //ws2811_t er en struktert struct som er lagd for 
             .invert = 0, //Vi trenger ikke invertere
             .brightness = STYRKE, //1-100 hvor mye lys skal den gi på maks, legges som et ekstra regnelag etter at den opprinnelige dmx-verdien er hentet.
             .strip_type = TYPE, //fargerekkefølge
-            .reset_us = PAUSETID,
+            
         },
     },
 };
