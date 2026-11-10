@@ -148,12 +148,32 @@ int main(void) //Selve programmet som kjøres
                 ws2811_get_return_t_str(ret));
         return 1;
     }
+    // Test rødt lys
+for (int i = 0; i < ANTALL_PIKSLER; i++) {
+    ledstring.channel[0].leds[i] = 0xFF000000;
+}
 
-    for (int i = 0; i < ANTALL_PIKSLER; i++) { //Skru av alle piksler i utgangspunktet
-        ledstring.channel[0].leds[i] = 0;
-    }
+ret = ws2811_render(&ledstring);
 
-    ws2811_render(&ledstring);
+if (ret != WS2811_SUCCESS) {
+    fprintf(stderr, "Render feilet: %s\n",
+            ws2811_get_return_t_str(ret));
+}
+
+sleep(3);
+
+// Skru av alle LED
+for (int i = 0; i < ANTALL_PIKSLER; i++) {
+    ledstring.channel[0].leds[i] = 0;
+}
+
+ws2811_render(&ledstring);
+
+    //for (int i = 0; i < ANTALL_PIKSLER; i++) { //Skru av alle piksler i utgangspunktet
+    //    ledstring.channel[0].leds[i] = 0;
+    //}
+    //
+    //ws2811_render(&ledstring);
 
     // Åpne UART
     int serial = open(UART_ENHET, O_RDONLY | O_NOCTTY); // åpner den serielle porten, som linux behandler som en fil (banen står definert i en konstant i toppen av programmet). Når vi åpner fila/porten får vi tilbake en fd (file deskriptor) som vi lagrer i variabelen serial. 
@@ -258,11 +278,7 @@ int main(void) //Selve programmet som kjøres
 
                 if (dmx_state == READ_CHANNELS && 
                     kanaler >= ANTALL_PIKSLER * ANTALL_CHANNELS) { //hvis vi er ferdig å gjøre klart det vi skal sende på dmx, push signalet
-                    
-                    printf("DMX: CH1=%u CH2=%u CH3=%u CH4=%u CH5=%u CH6=%u CH7=%u CH8=%u\n",
-                    dmx[0], dmx[1], dmx[2], dmx[3],
-                    dmx[4], dmx[5], dmx[6], dmx[7]);
-                    
+
                     oppdater_led(dmx);
                     antall_frames++;
                 }
