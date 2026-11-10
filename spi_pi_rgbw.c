@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <stdint.h> //for å kunne bruke heltall for jeg definerer størrelsen på forhånd
 #include <unistd.h> //kommunisere med operativsystem (hente data fra UART-porten og pauseprogrammet)
@@ -16,10 +15,9 @@
 #define ANTALL_CHANNELS 4 //per piksel
 #define FREKVENS 800000
 #define STYRKE 60
-#define TYPE WS2811_STRIP_RGBW
+#define TYPE SK6812_STRIP_RGBW
 #define DMX_CHANNELS 512
 #define UART_ENHET "/dev/serial0" //velger mellom standard mini-UART og den bra uarten jeg fikk ved å skru av bluetooth.
-
 
 
 static volatile sig_atomic_t running = 1; //definere en varianbel for å bestemme om programme skal fortsette å kjøre, sånn at vi kan lytte etter ctrl+c senere i programmet.
@@ -139,6 +137,8 @@ static void oppdater_led(const uint8_t dmx[]) //Funksjonen tar et array av 8-bit
 
 int main(void) //Selve programmet som kjøres
 {
+	static int debug_count = 0;
+static int debug_count2 = 0;
     signal(SIGINT, avbryt); //Hvis man trykker ctrl+c, kjør avbryt()
     signal(SIGTERM, avbryt); //Hvis man avbryter programmet, f.eks ved å trykke på det krysset i hjørnet, kjør avbryt()
 
@@ -238,6 +238,10 @@ int main(void) //Selve programmet som kjøres
                     } else { 
                         marker_state = MARK_NORMAL; //gå tilbake til normal-staten
                         event = 3; //Lagre at det var en feil av noe slag
+			if (debug_count2 < 20) {
+        printf("MARKER ERROR: FF %02X\n", byte);
+        debug_count2++;
+    }
                     }
                     break;
 
@@ -248,6 +252,12 @@ int main(void) //Selve programmet som kjøres
                         event = 2; // BREAK registrert
                     } else {
                         event = 3; // feil
+			static int debug_count = 0;
+
+        if (debug_count < 20) {
+            printf("MARKER ERROR: FF 00 %02X\n", byte);
+            debug_count++;
+        }	
                     }
                     break;
             }
