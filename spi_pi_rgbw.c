@@ -10,14 +10,15 @@
 #include <ws2811.h> //Et bibliotek lagd spesifikt for styring av ledteip, lar meg konfe programmet med info om den spesifike teipen
 
 
+
 #define LED_PIN 18
 #define ANTALL_PIKSLER 60
 #define ANTALL_CHANNELS 4 //per piksel
-#define FREKVENS 800000
 #define STYRKE 100
 #define TYPE SK6812_STRIP_RGBW
 #define DMX_CHANNELS 512
 #define UART_ENHET "/dev/serial0" //velger mellom standard mini-UART og den bra uarten jeg fikk ved å skru av bluetooth.
+#define FREKVENS 685714
 #define PAUSETID 100
 
 
@@ -27,6 +28,7 @@ static ws2811_t ledstring = { //ws2811_t er en struktert struct som er lagd for 
     .freq = FREKVENS, //signalfrekvensen skal være på 800.000 (det sto i dokmentasjonen)
     .dmanum = 10, //sier at den skal bruke DMA-channel 10 når den skriver direkte til RAM for å spare på cpu-en
     .reset_us = PAUSETID,
+    .symbols_per_bit = 4,
     .channel = {
         [0] = { //channel 1 av 2, vi kan bruke to separate channels til å styre to striper med ulike innstillinger, så lenge bitraten er lik.
             .gpionum = LED_PIN, // henter konstanten på hvilken gpiopin teipen er tilkoblet.
@@ -38,6 +40,7 @@ static ws2811_t ledstring = { //ws2811_t er en struktert struct som er lagd for 
         },
     },
 };
+
 
 enum MarkerState { //Enum er en datatype hvor vi gir navn til ulike heltall, ofte for å få oversikt over ulike scenarioer eller versjoner av noe. Her er det for å skille mellom de forskjellige typene tilstandene vi kan være i når vi leser bytes: 
     MARK_NORMAL, //leser vanlige bytes
