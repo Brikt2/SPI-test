@@ -104,26 +104,30 @@ static inline void wait_until(uint64_t deadline)
 // SEND ÉN BIT
 // --------------------------------------------------
 
+
 static inline void send_bit(uint8_t bit)
 {
-    uint64_t start = now_ns();
+    // Registrer starten på databiten
+    uint64_t bit_start = now_ns();
 
-    // Signal HIGH
+    // Sett GPIO18 HØY
     gpio[GPIO_GPSET0] = GPIO_MASK;
 
-    // Vent med signalet høyt
-    if (bit) {
-        wait_until(start + T1H_NS);
-    } else {
-        wait_until(start + T0H_NS);
-    }
+    // Start målingen etter at GPIO er satt høy
+    uint64_t high_start = now_ns();
 
-    // Signal LOW
+    // Bestem hvor lenge signalet skal være høyt
+    uint32_t high_time = bit ? T1H_NS : T0H_NS;
+
+    wait_until(high_start + high_time);
+
+    // Sett GPIO18 LAV
     gpio[GPIO_GPCLR0] = GPIO_MASK;
 
-    // Vent til neste bit
-    wait_until(start + BIT_PERIOD_NS);
+    // Vent til neste databits start
+    wait_until(bit_start + BIT_PERIOD_NS);
 }
+
 
 
 // --------------------------------------------------
